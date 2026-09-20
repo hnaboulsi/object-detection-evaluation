@@ -1,0 +1,8 @@
+# Use a separate environment. The official MMCV stack may not build on macOS arm64.
+-r requirements.txt
+openmim
+setuptools==69.5.1
+wheel
+ninja
+mmengine>=0.7.1
+mmdet==3.0.0
