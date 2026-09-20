@@ -10,7 +10,7 @@ jobs:
         runner: [ubuntu-24.04, ubuntu-24.04-arm]
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build CPU image and test dependencies
         run: docker build --target test -t detector-tests .
       - name: Lint and format
