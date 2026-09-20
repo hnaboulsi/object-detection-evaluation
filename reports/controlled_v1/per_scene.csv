@@ -1,0 +1,217 @@
+scene_id,target_label,asset_id,target_present,factor,level,true_positives,false_positives,false_negatives,inference_time_seconds,result_path
+scene_000_couch_baseline,couch,Couch_Large1,True,baseline,baseline,1,1,0,4.775887752000017,results/scene_000_couch_baseline/result.json
+scene_001_couch_azimuth_minus90,couch,Couch_Large1,True,viewpoint,azimuth_-90,1,0,0,4.2659638349999796,results/scene_001_couch_azimuth_minus90/result.json
+scene_002_couch_azimuth_minus45,couch,Couch_Large1,True,viewpoint,azimuth_-45,1,0,0,4.911618627000053,results/scene_002_couch_azimuth_minus45/result.json
+scene_003_couch_azimuth_plus45,couch,Couch_Large1,True,viewpoint,azimuth_+45,1,0,0,5.275750335999987,results/scene_003_couch_azimuth_plus45/result.json
+scene_004_couch_azimuth_plus90,couch,Couch_Large1,True,viewpoint,azimuth_+90,1,0,0,4.940413669000009,results/scene_004_couch_azimuth_plus90/result.json
+scene_005_couch_distance_1.5m,couch,Couch_Large1,True,distance,distance_1.5m,1,3,0,4.925641751000057,results/scene_005_couch_distance_1.5m/result.json
+scene_006_couch_distance_4m,couch,Couch_Large1,True,distance,distance_4m,1,0,0,5.799703835999935,results/scene_006_couch_distance_4m/result.json
+scene_007_couch_visible_75pct,couch,Couch_Large1,True,occlusion,visible_75pct,1,1,0,5.788890543999969,results/scene_007_couch_visible_75pct/result.json
+scene_008_couch_visible_50pct,couch,Couch_Large1,True,occlusion,visible_50pct,1,0,0,4.847678878000011,results/scene_008_couch_visible_50pct/result.json
+scene_009_couch_visible_25pct,couch,Couch_Large1,True,occlusion,visible_25pct,1,0,0,4.770867793999969,results/scene_009_couch_visible_25pct/result.json
+scene_010_couch_dim,couch,Couch_Large1,True,lighting,dim,1,0,0,4.792882501999998,results/scene_010_couch_dim/result.json
+scene_011_couch_bright,couch,Couch_Large1,True,lighting,bright,1,1,0,4.476208960000008,results/scene_011_couch_bright/result.json
+scene_012_couch_side,couch,Couch_Large1,True,lighting,side,1,0,0,4.8491661269999895,results/scene_012_couch_side/result.json
+scene_013_couch_mixed,couch,Couch_Large1,True,clutter,mixed,1,0,0,4.344238336000103,results/scene_013_couch_mixed/result.json
+scene_014_couch_similar_shape,couch,Couch_Large1,True,clutter,similar_shape,1,1,0,4.234821710000006,results/scene_014_couch_similar_shape/result.json
+scene_015_couch_focal_400px,couch,Couch_Large1,True,focal_length,focal_400px,1,0,0,4.279457460000003,results/scene_015_couch_focal_400px/result.json
+scene_016_couch_focal_700px,couch,Couch_Large1,True,focal_length,focal_700px,0,3,1,4.198173001999976,results/scene_016_couch_focal_700px/result.json
+scene_017_couch_baseline,couch,Couch_Medium1,True,baseline,baseline,1,0,0,4.264735252000037,results/scene_017_couch_baseline/result.json
+scene_018_couch_azimuth_minus90,couch,Couch_Medium1,True,viewpoint,azimuth_-90,1,0,0,4.860878877000005,results/scene_018_couch_azimuth_minus90/result.json
+scene_019_couch_azimuth_minus45,couch,Couch_Medium1,True,viewpoint,azimuth_-45,1,0,0,5.598155543999951,results/scene_019_couch_azimuth_minus45/result.json
+scene_020_couch_azimuth_plus45,couch,Couch_Medium1,True,viewpoint,azimuth_+45,1,0,0,4.722987878000026,results/scene_020_couch_azimuth_plus45/result.json
+scene_021_couch_azimuth_plus90,couch,Couch_Medium1,True,viewpoint,azimuth_+90,1,0,0,4.7971830029999865,results/scene_021_couch_azimuth_plus90/result.json
+scene_022_couch_distance_1.5m,couch,Couch_Medium1,True,distance,distance_1.5m,1,0,0,4.78320983499998,results/scene_022_couch_distance_1.5m/result.json
+scene_023_couch_distance_4m,couch,Couch_Medium1,True,distance,distance_4m,1,0,0,4.880261461000032,results/scene_023_couch_distance_4m/result.json
+scene_024_couch_visible_75pct,couch,Couch_Medium1,True,occlusion,visible_75pct,1,0,0,5.174646251000013,results/scene_024_couch_visible_75pct/result.json
+scene_025_couch_visible_50pct,couch,Couch_Medium1,True,occlusion,visible_50pct,1,0,0,5.248273669000014,results/scene_025_couch_visible_50pct/result.json
+scene_026_couch_visible_25pct,couch,Couch_Medium1,True,occlusion,visible_25pct,1,0,0,6.33626596199997,results/scene_026_couch_visible_25pct/result.json
+scene_027_couch_dim,couch,Couch_Medium1,True,lighting,dim,1,0,0,5.069792376999999,results/scene_027_couch_dim/result.json
+scene_028_couch_bright,couch,Couch_Medium1,True,lighting,bright,1,0,0,6.851963253000008,results/scene_028_couch_bright/result.json
+scene_029_couch_side,couch,Couch_Medium1,True,lighting,side,1,0,0,5.828379294000001,results/scene_029_couch_side/result.json
+scene_030_couch_mixed,couch,Couch_Medium1,True,clutter,mixed,1,0,0,5.9109717530000125,results/scene_030_couch_mixed/result.json
+scene_031_couch_similar_shape,couch,Couch_Medium1,True,clutter,similar_shape,1,0,0,6.943791419999911,results/scene_031_couch_similar_shape/result.json
+scene_032_couch_focal_400px,couch,Couch_Medium1,True,focal_length,focal_400px,1,0,0,6.253771336,results/scene_032_couch_focal_400px/result.json
+scene_033_couch_focal_700px,couch,Couch_Medium1,True,focal_length,focal_700px,1,0,0,5.781801127999984,results/scene_033_couch_focal_700px/result.json
+scene_034_couch_baseline,couch,Couch_Small1,True,baseline,baseline,1,0,0,5.537707043999944,results/scene_034_couch_baseline/result.json
+scene_035_couch_azimuth_minus90,couch,Couch_Small1,True,viewpoint,azimuth_-90,1,0,0,5.645139253000025,results/scene_035_couch_azimuth_minus90/result.json
+scene_036_couch_azimuth_minus45,couch,Couch_Small1,True,viewpoint,azimuth_-45,1,0,0,5.65679383600002,results/scene_036_couch_azimuth_minus45/result.json
+scene_037_couch_azimuth_plus45,couch,Couch_Small1,True,viewpoint,azimuth_+45,1,0,0,5.9434025860000474,results/scene_037_couch_azimuth_plus45/result.json
+scene_038_couch_azimuth_plus90,couch,Couch_Small1,True,viewpoint,azimuth_+90,1,0,0,6.124215086000049,results/scene_038_couch_azimuth_plus90/result.json
+scene_039_couch_distance_1.5m,couch,Couch_Small1,True,distance,distance_1.5m,1,0,0,6.169119752000029,results/scene_039_couch_distance_1.5m/result.json
+scene_040_couch_distance_4m,couch,Couch_Small1,True,distance,distance_4m,1,0,0,5.996180335999952,results/scene_040_couch_distance_4m/result.json
+scene_041_couch_visible_75pct,couch,Couch_Small1,True,occlusion,visible_75pct,1,0,0,6.099784710999984,results/scene_041_couch_visible_75pct/result.json
+scene_042_couch_visible_50pct,couch,Couch_Small1,True,occlusion,visible_50pct,1,0,0,6.910829169999943,results/scene_042_couch_visible_50pct/result.json
+scene_043_couch_visible_25pct,couch,Couch_Small1,True,occlusion,visible_25pct,1,0,0,6.199664961000053,results/scene_043_couch_visible_25pct/result.json
+scene_044_couch_dim,couch,Couch_Small1,True,lighting,dim,1,0,0,6.52148317000001,results/scene_044_couch_dim/result.json
+scene_045_couch_bright,couch,Couch_Small1,True,lighting,bright,1,0,0,6.3437839609999855,results/scene_045_couch_bright/result.json
+scene_046_couch_side,couch,Couch_Small1,True,lighting,side,1,0,0,6.246279461000086,results/scene_046_couch_side/result.json
+scene_047_couch_mixed,couch,Couch_Small1,True,clutter,mixed,1,0,0,5.856332211999984,results/scene_047_couch_mixed/result.json
+scene_048_couch_similar_shape,couch,Couch_Small1,True,clutter,similar_shape,1,0,0,5.794162878000066,results/scene_048_couch_similar_shape/result.json
+scene_049_couch_focal_400px,couch,Couch_Small1,True,focal_length,focal_400px,1,0,0,6.337427543999979,results/scene_049_couch_focal_400px/result.json
+scene_050_couch_focal_700px,couch,Couch_Small1,True,focal_length,focal_700px,1,0,0,7.181276711999999,results/scene_050_couch_focal_700px/result.json
+scene_051_chair_baseline,chair,Chair_1,True,baseline,baseline,1,0,0,7.7583337539999775,results/scene_051_chair_baseline/result.json
+scene_052_chair_azimuth_minus90,chair,Chair_1,True,viewpoint,azimuth_-90,1,0,0,6.590430295000033,results/scene_052_chair_azimuth_minus90/result.json
+scene_053_chair_azimuth_minus45,chair,Chair_1,True,viewpoint,azimuth_-45,1,0,0,5.985219668000013,results/scene_053_chair_azimuth_minus45/result.json
+scene_054_chair_azimuth_plus45,chair,Chair_1,True,viewpoint,azimuth_+45,1,0,0,5.781739378000111,results/scene_054_chair_azimuth_plus45/result.json
+scene_055_chair_azimuth_plus90,chair,Chair_1,True,viewpoint,azimuth_+90,1,0,0,6.088511461000053,results/scene_055_chair_azimuth_plus90/result.json
+scene_056_chair_distance_1.5m,chair,Chair_1,True,distance,distance_1.5m,1,0,0,5.692033711000022,results/scene_056_chair_distance_1.5m/result.json
+scene_057_chair_distance_4m,chair,Chair_1,True,distance,distance_4m,1,0,0,7.351037378000001,results/scene_057_chair_distance_4m/result.json
+scene_058_chair_visible_75pct,chair,Chair_1,True,occlusion,visible_75pct,1,0,0,7.751858835999997,results/scene_058_chair_visible_75pct/result.json
+scene_059_chair_visible_50pct,chair,Chair_1,True,occlusion,visible_50pct,1,0,0,7.541030379000063,results/scene_059_chair_visible_50pct/result.json
+scene_060_chair_visible_25pct,chair,Chair_1,True,occlusion,visible_25pct,1,1,0,8.135683254000014,results/scene_060_chair_visible_25pct/result.json
+scene_061_chair_dim,chair,Chair_1,True,lighting,dim,1,0,0,6.143378670000061,results/scene_061_chair_dim/result.json
+scene_062_chair_bright,chair,Chair_1,True,lighting,bright,1,0,0,6.703978585999948,results/scene_062_chair_bright/result.json
+scene_063_chair_side,chair,Chair_1,True,lighting,side,1,0,0,7.6844870040000615,results/scene_063_chair_side/result.json
+scene_064_chair_mixed,chair,Chair_1,True,clutter,mixed,1,0,0,8.243098336999992,results/scene_064_chair_mixed/result.json
+scene_065_chair_similar_shape,chair,Chair_1,True,clutter,similar_shape,1,0,0,8.054438212000036,results/scene_065_chair_similar_shape/result.json
+scene_066_chair_focal_400px,chair,Chair_1,True,focal_length,focal_400px,1,0,0,6.536815877000095,results/scene_066_chair_focal_400px/result.json
+scene_067_chair_focal_700px,chair,Chair_1,True,focal_length,focal_700px,1,0,0,6.832728129000088,results/scene_067_chair_focal_700px/result.json
+scene_068_chair_baseline,chair,Chair_2,True,baseline,baseline,1,0,0,7.940323628999977,results/scene_068_chair_baseline/result.json
+scene_069_chair_azimuth_minus90,chair,Chair_2,True,viewpoint,azimuth_-90,1,0,0,8.324117587000046,results/scene_069_chair_azimuth_minus90/result.json
+scene_070_chair_azimuth_minus45,chair,Chair_2,True,viewpoint,azimuth_-45,1,0,0,7.6943827530000135,results/scene_070_chair_azimuth_minus45/result.json
+scene_071_chair_azimuth_plus45,chair,Chair_2,True,viewpoint,azimuth_+45,1,0,0,7.712489212000037,results/scene_071_chair_azimuth_plus45/result.json
+scene_072_chair_azimuth_plus90,chair,Chair_2,True,viewpoint,azimuth_+90,1,0,0,8.494364919999953,results/scene_072_chair_azimuth_plus90/result.json
+scene_073_chair_distance_1.5m,chair,Chair_2,True,distance,distance_1.5m,1,0,0,7.219021669999847,results/scene_073_chair_distance_1.5m/result.json
+scene_074_chair_distance_4m,chair,Chair_2,True,distance,distance_4m,1,0,0,6.106038170000147,results/scene_074_chair_distance_4m/result.json
+scene_075_chair_visible_75pct,chair,Chair_2,True,occlusion,visible_75pct,1,0,0,5.903280377999863,results/scene_075_chair_visible_75pct/result.json
+scene_076_chair_visible_50pct,chair,Chair_2,True,occlusion,visible_50pct,1,0,0,8.368042670999785,results/scene_076_chair_visible_50pct/result.json
+scene_077_chair_visible_25pct,chair,Chair_2,True,occlusion,visible_25pct,1,0,0,7.46112025299999,results/scene_077_chair_visible_25pct/result.json
+scene_078_chair_dim,chair,Chair_2,True,lighting,dim,1,0,0,6.390949044000081,results/scene_078_chair_dim/result.json
+scene_079_chair_bright,chair,Chair_2,True,lighting,bright,1,0,0,6.672381252999912,results/scene_079_chair_bright/result.json
+scene_080_chair_side,chair,Chair_2,True,lighting,side,1,0,0,7.049534545000142,results/scene_080_chair_side/result.json
+scene_081_chair_mixed,chair,Chair_2,True,clutter,mixed,1,0,0,6.481837919999862,results/scene_081_chair_mixed/result.json
+scene_082_chair_similar_shape,chair,Chair_2,True,clutter,similar_shape,1,0,0,5.967615376999902,results/scene_082_chair_similar_shape/result.json
+scene_083_chair_focal_400px,chair,Chair_2,True,focal_length,focal_400px,1,0,0,5.367805503,results/scene_083_chair_focal_400px/result.json
+scene_084_chair_focal_700px,chair,Chair_2,True,focal_length,focal_700px,1,0,0,5.675241044999893,results/scene_084_chair_focal_700px/result.json
+scene_085_chair_baseline,chair,Chair_3,True,baseline,baseline,1,0,0,7.786722503999954,results/scene_085_chair_baseline/result.json
+scene_086_chair_azimuth_minus90,chair,Chair_3,True,viewpoint,azimuth_-90,1,0,0,8.663271462000012,results/scene_086_chair_azimuth_minus90/result.json
+scene_087_chair_azimuth_minus45,chair,Chair_3,True,viewpoint,azimuth_-45,1,0,0,8.146399418999863,results/scene_087_chair_azimuth_minus45/result.json
+scene_088_chair_azimuth_plus45,chair,Chair_3,True,viewpoint,azimuth_+45,1,0,0,7.825622003999797,results/scene_088_chair_azimuth_plus45/result.json
+scene_089_chair_azimuth_plus90,chair,Chair_3,True,viewpoint,azimuth_+90,1,0,0,6.292329169999903,results/scene_089_chair_azimuth_plus90/result.json
+scene_090_chair_distance_1.5m,chair,Chair_3,True,distance,distance_1.5m,1,0,0,6.213449670000045,results/scene_090_chair_distance_1.5m/result.json
+scene_091_chair_distance_4m,chair,Chair_3,True,distance,distance_4m,1,0,0,6.256332585000109,results/scene_091_chair_distance_4m/result.json
+scene_092_chair_visible_75pct,chair,Chair_3,True,occlusion,visible_75pct,1,0,0,5.295810003000042,results/scene_092_chair_visible_75pct/result.json
+scene_093_chair_visible_50pct,chair,Chair_3,True,occlusion,visible_50pct,1,0,0,5.61603729400008,results/scene_093_chair_visible_50pct/result.json
+scene_094_chair_visible_25pct,chair,Chair_3,True,occlusion,visible_25pct,1,0,0,6.042886043999943,results/scene_094_chair_visible_25pct/result.json
+scene_095_chair_dim,chair,Chair_3,True,lighting,dim,1,0,0,7.150548919999892,results/scene_095_chair_dim/result.json
+scene_096_chair_bright,chair,Chair_3,True,lighting,bright,1,0,0,10.264933921000193,results/scene_096_chair_bright/result.json
+scene_097_chair_side,chair,Chair_3,True,lighting,side,1,0,0,8.237690961999988,results/scene_097_chair_side/result.json
+scene_098_chair_mixed,chair,Chair_3,True,clutter,mixed,1,0,0,5.380490710999993,results/scene_098_chair_mixed/result.json
+scene_099_chair_similar_shape,chair,Chair_3,True,clutter,similar_shape,1,0,0,5.26678696099998,results/scene_099_chair_similar_shape/result.json
+scene_100_chair_focal_400px,chair,Chair_3,True,focal_length,focal_400px,1,0,0,5.00293375199999,results/scene_100_chair_focal_400px/result.json
+scene_101_chair_focal_700px,chair,Chair_3,True,focal_length,focal_700px,1,0,0,5.025572628000191,results/scene_101_chair_focal_700px/result.json
+scene_102_bed_baseline,bed,Bed_King,True,baseline,baseline,1,1,0,5.268816044999994,results/scene_102_bed_baseline/result.json
+scene_103_bed_azimuth_minus90,bed,Bed_King,True,viewpoint,azimuth_-90,1,1,0,4.886710169000025,results/scene_103_bed_azimuth_minus90/result.json
+scene_104_bed_azimuth_minus45,bed,Bed_King,True,viewpoint,azimuth_-45,1,0,0,4.863532460999977,results/scene_104_bed_azimuth_minus45/result.json
+scene_105_bed_azimuth_plus45,bed,Bed_King,True,viewpoint,azimuth_+45,1,0,0,4.901305086000093,results/scene_105_bed_azimuth_plus45/result.json
+scene_106_bed_azimuth_plus90,bed,Bed_King,True,viewpoint,azimuth_+90,1,0,0,5.019234043000097,results/scene_106_bed_azimuth_plus90/result.json
+scene_107_bed_distance_1.5m,bed,Bed_King,True,distance,distance_1.5m,0,2,1,4.8358955019998575,results/scene_107_bed_distance_1.5m/result.json
+scene_108_bed_distance_4m,bed,Bed_King,True,distance,distance_4m,1,0,0,7.137664170000107,results/scene_108_bed_distance_4m/result.json
+scene_109_bed_visible_75pct,bed,Bed_King,True,occlusion,visible_75pct,1,0,0,7.55545479500006,results/scene_109_bed_visible_75pct/result.json
+scene_110_bed_visible_50pct,bed,Bed_King,True,occlusion,visible_50pct,1,1,0,12.295521880000024,results/scene_110_bed_visible_50pct/result.json
+scene_111_bed_visible_25pct,bed,Bed_King,True,occlusion,visible_25pct,1,0,0,9.296683505000146,results/scene_111_bed_visible_25pct/result.json
+scene_112_bed_dim,bed,Bed_King,True,lighting,dim,1,1,0,8.974979088000055,results/scene_112_bed_dim/result.json
+scene_113_bed_bright,bed,Bed_King,True,lighting,bright,1,0,0,6.77221646199996,results/scene_113_bed_bright/result.json
+scene_114_bed_side,bed,Bed_King,True,lighting,side,1,1,0,7.278334044999838,results/scene_114_bed_side/result.json
+scene_115_bed_mixed,bed,Bed_King,True,clutter,mixed,1,0,0,6.451013877999912,results/scene_115_bed_mixed/result.json
+scene_116_bed_similar_shape,bed,Bed_King,True,clutter,similar_shape,1,2,0,6.486557877999985,results/scene_116_bed_similar_shape/result.json
+scene_117_bed_focal_400px,bed,Bed_King,True,focal_length,focal_400px,1,0,0,7.327881294999997,results/scene_117_bed_focal_400px/result.json
+scene_118_bed_focal_700px,bed,Bed_King,True,focal_length,focal_700px,0,1,1,7.7003082520000135,results/scene_118_bed_focal_700px/result.json
+scene_119_bed_baseline,bed,Bed_Single,True,baseline,baseline,1,0,0,8.022930838000093,results/scene_119_bed_baseline/result.json
+scene_120_bed_azimuth_minus90,bed,Bed_Single,True,viewpoint,azimuth_-90,1,0,0,8.78983692099996,results/scene_120_bed_azimuth_minus90/result.json
+scene_121_bed_azimuth_minus45,bed,Bed_Single,True,viewpoint,azimuth_-45,1,0,0,7.886274211,results/scene_121_bed_azimuth_minus45/result.json
+scene_122_bed_azimuth_plus45,bed,Bed_Single,True,viewpoint,azimuth_+45,1,0,0,7.682539878999933,results/scene_122_bed_azimuth_plus45/result.json
+scene_123_bed_azimuth_plus90,bed,Bed_Single,True,viewpoint,azimuth_+90,1,0,0,6.969938127999967,results/scene_123_bed_azimuth_plus90/result.json
+scene_124_bed_distance_1.5m,bed,Bed_Single,True,distance,distance_1.5m,0,0,1,6.8884760869998445,results/scene_124_bed_distance_1.5m/result.json
+scene_125_bed_distance_4m,bed,Bed_Single,True,distance,distance_4m,1,0,0,6.713594752999825,results/scene_125_bed_distance_4m/result.json
+scene_126_bed_visible_75pct,bed,Bed_Single,True,occlusion,visible_75pct,1,0,0,6.764696337000032,results/scene_126_bed_visible_75pct/result.json
+scene_127_bed_visible_50pct,bed,Bed_Single,True,occlusion,visible_50pct,1,0,0,6.75534796099987,results/scene_127_bed_visible_50pct/result.json
+scene_128_bed_visible_25pct,bed,Bed_Single,True,occlusion,visible_25pct,0,0,1,7.241468252999994,results/scene_128_bed_visible_25pct/result.json
+scene_129_bed_dim,bed,Bed_Single,True,lighting,dim,1,1,0,7.37375679500019,results/scene_129_bed_dim/result.json
+scene_130_bed_bright,bed,Bed_Single,True,lighting,bright,1,1,0,6.946995668999989,results/scene_130_bed_bright/result.json
+scene_131_bed_side,bed,Bed_Single,True,lighting,side,1,1,0,6.435343127999886,results/scene_131_bed_side/result.json
+scene_132_bed_mixed,bed,Bed_Single,True,clutter,mixed,1,0,0,6.628245419999985,results/scene_132_bed_mixed/result.json
+scene_133_bed_similar_shape,bed,Bed_Single,True,clutter,similar_shape,1,1,0,6.235671420000017,results/scene_133_bed_similar_shape/result.json
+scene_134_bed_focal_400px,bed,Bed_Single,True,focal_length,focal_400px,1,0,0,6.063703502999942,results/scene_134_bed_focal_400px/result.json
+scene_135_bed_focal_700px,bed,Bed_Single,True,focal_length,focal_700px,1,1,0,5.512198585000078,results/scene_135_bed_focal_700px/result.json
+scene_136_bed_baseline,bed,Bed_Bunk,True,baseline,baseline,1,1,0,5.532419835999917,results/scene_136_bed_baseline/result.json
+scene_137_bed_azimuth_minus90,bed,Bed_Bunk,True,viewpoint,azimuth_-90,1,0,0,6.400825294000015,results/scene_137_bed_azimuth_minus90/result.json
+scene_138_bed_azimuth_minus45,bed,Bed_Bunk,True,viewpoint,azimuth_-45,1,0,0,5.085740668999961,results/scene_138_bed_azimuth_minus45/result.json
+scene_139_bed_azimuth_plus45,bed,Bed_Bunk,True,viewpoint,azimuth_+45,1,0,0,5.5479212530001405,results/scene_139_bed_azimuth_plus45/result.json
+scene_140_bed_azimuth_plus90,bed,Bed_Bunk,True,viewpoint,azimuth_+90,1,0,0,5.4739142939999965,results/scene_140_bed_azimuth_plus90/result.json
+scene_141_bed_distance_1.5m,bed,Bed_Bunk,True,distance,distance_1.5m,0,1,1,5.443428919000098,results/scene_141_bed_distance_1.5m/result.json
+scene_142_bed_distance_4m,bed,Bed_Bunk,True,distance,distance_4m,1,0,0,5.6828324190000785,results/scene_142_bed_distance_4m/result.json
+scene_143_bed_visible_75pct,bed,Bed_Bunk,True,occlusion,visible_75pct,1,0,0,5.744899711000016,results/scene_143_bed_visible_75pct/result.json
+scene_144_bed_visible_50pct,bed,Bed_Bunk,True,occlusion,visible_50pct,1,1,0,5.161617626999941,results/scene_144_bed_visible_50pct/result.json
+scene_145_bed_visible_25pct,bed,Bed_Bunk,True,occlusion,visible_25pct,1,0,0,6.468934918999821,results/scene_145_bed_visible_25pct/result.json
+scene_146_bed_dim,bed,Bed_Bunk,True,lighting,dim,1,0,0,5.460451128000159,results/scene_146_bed_dim/result.json
+scene_147_bed_bright,bed,Bed_Bunk,True,lighting,bright,1,1,0,5.034765210999922,results/scene_147_bed_bright/result.json
+scene_148_bed_side,bed,Bed_Bunk,True,lighting,side,1,2,0,4.892764709999938,results/scene_148_bed_side/result.json
+scene_149_bed_mixed,bed,Bed_Bunk,True,clutter,mixed,1,1,0,5.513250710999955,results/scene_149_bed_mixed/result.json
+scene_150_bed_similar_shape,bed,Bed_Bunk,True,clutter,similar_shape,1,1,0,5.3459385440000915,results/scene_150_bed_similar_shape/result.json
+scene_151_bed_focal_400px,bed,Bed_Bunk,True,focal_length,focal_400px,1,1,0,5.206622085999925,results/scene_151_bed_focal_400px/result.json
+scene_152_bed_focal_700px,bed,Bed_Bunk,True,focal_length,focal_700px,1,1,0,5.274964127999965,results/scene_152_bed_focal_700px/result.json
+scene_153_dining_table_baseline,dining table,Table_RoundLarge,True,baseline,baseline,1,0,0,5.452230793999888,results/scene_153_dining_table_baseline/result.json
+scene_154_dining_table_azimuth_minus90,dining table,Table_RoundLarge,True,viewpoint,azimuth_-90,1,0,0,6.713401920000024,results/scene_154_dining_table_azimuth_minus90/result.json
+scene_155_dining_table_azimuth_minus45,dining table,Table_RoundLarge,True,viewpoint,azimuth_-45,1,0,0,5.7178895449999345,results/scene_155_dining_table_azimuth_minus45/result.json
+scene_156_dining_table_azimuth_plus45,dining table,Table_RoundLarge,True,viewpoint,azimuth_+45,1,0,0,5.5847086270000545,results/scene_156_dining_table_azimuth_plus45/result.json
+scene_157_dining_table_azimuth_plus90,dining table,Table_RoundLarge,True,viewpoint,azimuth_+90,1,1,0,6.22364987800006,results/scene_157_dining_table_azimuth_plus90/result.json
+scene_158_dining_table_distance_1.5m,dining table,Table_RoundLarge,True,distance,distance_1.5m,1,0,0,5.450470961000065,results/scene_158_dining_table_distance_1.5m/result.json
+scene_159_dining_table_distance_4m,dining table,Table_RoundLarge,True,distance,distance_4m,1,0,0,5.426809836000075,results/scene_159_dining_table_distance_4m/result.json
+scene_160_dining_table_visible_75pct,dining table,Table_RoundLarge,True,occlusion,visible_75pct,1,0,0,5.145372210999994,results/scene_160_dining_table_visible_75pct/result.json
+scene_161_dining_table_visible_50pct,dining table,Table_RoundLarge,True,occlusion,visible_50pct,1,0,0,5.067767210999818,results/scene_161_dining_table_visible_50pct/result.json
+scene_162_dining_table_visible_25pct,dining table,Table_RoundLarge,True,occlusion,visible_25pct,1,0,0,4.980024960000037,results/scene_162_dining_table_visible_25pct/result.json
+scene_163_dining_table_dim,dining table,Table_RoundLarge,True,lighting,dim,1,0,0,4.955457169000056,results/scene_163_dining_table_dim/result.json
+scene_164_dining_table_bright,dining table,Table_RoundLarge,True,lighting,bright,1,0,0,5.150788709999915,results/scene_164_dining_table_bright/result.json
+scene_165_dining_table_side,dining table,Table_RoundLarge,True,lighting,side,1,0,0,6.063092918999928,results/scene_165_dining_table_side/result.json
+scene_166_dining_table_mixed,dining table,Table_RoundLarge,True,clutter,mixed,1,1,0,5.380713836000041,results/scene_166_dining_table_mixed/result.json
+scene_167_dining_table_similar_shape,dining table,Table_RoundLarge,True,clutter,similar_shape,1,0,0,5.2783317519999855,results/scene_167_dining_table_similar_shape/result.json
+scene_168_dining_table_focal_400px,dining table,Table_RoundLarge,True,focal_length,focal_400px,1,0,0,7.3993528780001725,results/scene_168_dining_table_focal_400px/result.json
+scene_169_dining_table_focal_700px,dining table,Table_RoundLarge,True,focal_length,focal_700px,1,0,0,5.9834455029999845,results/scene_169_dining_table_focal_700px/result.json
+scene_170_dining_table_baseline,dining table,Table_RoundSmall,True,baseline,baseline,1,0,0,5.287757169000088,results/scene_170_dining_table_baseline/result.json
+scene_171_dining_table_azimuth_minus90,dining table,Table_RoundSmall,True,viewpoint,azimuth_-90,1,0,0,5.078969086000143,results/scene_171_dining_table_azimuth_minus90/result.json
+scene_172_dining_table_azimuth_minus45,dining table,Table_RoundSmall,True,viewpoint,azimuth_-45,1,0,0,6.087298917999988,results/scene_172_dining_table_azimuth_minus45/result.json
+scene_173_dining_table_azimuth_plus45,dining table,Table_RoundSmall,True,viewpoint,azimuth_+45,1,0,0,6.79468133599994,results/scene_173_dining_table_azimuth_plus45/result.json
+scene_174_dining_table_azimuth_plus90,dining table,Table_RoundSmall,True,viewpoint,azimuth_+90,1,1,0,5.196875086000091,results/scene_174_dining_table_azimuth_plus90/result.json
+scene_175_dining_table_distance_1.5m,dining table,Table_RoundSmall,True,distance,distance_1.5m,1,0,0,4.970072251999909,results/scene_175_dining_table_distance_1.5m/result.json
+scene_176_dining_table_distance_4m,dining table,Table_RoundSmall,True,distance,distance_4m,1,0,0,4.862602251999988,results/scene_176_dining_table_distance_4m/result.json
+scene_177_dining_table_visible_75pct,dining table,Table_RoundSmall,True,occlusion,visible_75pct,1,0,0,5.322817836000013,results/scene_177_dining_table_visible_75pct/result.json
+scene_178_dining_table_visible_50pct,dining table,Table_RoundSmall,True,occlusion,visible_50pct,1,0,0,5.340171835000092,results/scene_178_dining_table_visible_50pct/result.json
+scene_179_dining_table_visible_25pct,dining table,Table_RoundSmall,True,occlusion,visible_25pct,1,0,0,4.987874461000047,results/scene_179_dining_table_visible_25pct/result.json
+scene_180_dining_table_dim,dining table,Table_RoundSmall,True,lighting,dim,1,0,0,4.824210460000131,results/scene_180_dining_table_dim/result.json
+scene_181_dining_table_bright,dining table,Table_RoundSmall,True,lighting,bright,1,0,0,5.445695211000157,results/scene_181_dining_table_bright/result.json
+scene_182_dining_table_side,dining table,Table_RoundSmall,True,lighting,side,1,0,0,6.333175752999978,results/scene_182_dining_table_side/result.json
+scene_183_dining_table_mixed,dining table,Table_RoundSmall,True,clutter,mixed,1,1,0,5.179900459999999,results/scene_183_dining_table_mixed/result.json
+scene_184_dining_table_similar_shape,dining table,Table_RoundSmall,True,clutter,similar_shape,1,0,0,6.309496545000002,results/scene_184_dining_table_similar_shape/result.json
+scene_185_dining_table_focal_400px,dining table,Table_RoundSmall,True,focal_length,focal_400px,1,0,0,6.531946753000057,results/scene_185_dining_table_focal_400px/result.json
+scene_186_dining_table_focal_700px,dining table,Table_RoundSmall,True,focal_length,focal_700px,1,0,0,6.660116378000112,results/scene_186_dining_table_focal_700px/result.json
+scene_187_dining_table_baseline,dining table,Table_RoundSmall2,True,baseline,baseline,1,0,0,5.854768627999874,results/scene_187_dining_table_baseline/result.json
+scene_188_dining_table_azimuth_minus90,dining table,Table_RoundSmall2,True,viewpoint,azimuth_-90,1,0,0,5.515227419000212,results/scene_188_dining_table_azimuth_minus90/result.json
+scene_189_dining_table_azimuth_minus45,dining table,Table_RoundSmall2,True,viewpoint,azimuth_-45,1,0,0,5.800292210999942,results/scene_189_dining_table_azimuth_minus45/result.json
+scene_190_dining_table_azimuth_plus45,dining table,Table_RoundSmall2,True,viewpoint,azimuth_+45,1,0,0,7.013508627999954,results/scene_190_dining_table_azimuth_plus45/result.json
+scene_191_dining_table_azimuth_plus90,dining table,Table_RoundSmall2,True,viewpoint,azimuth_+90,1,1,0,6.460130794000179,results/scene_191_dining_table_azimuth_plus90/result.json
+scene_192_dining_table_distance_1.5m,dining table,Table_RoundSmall2,True,distance,distance_1.5m,1,0,0,7.162650461999874,results/scene_192_dining_table_distance_1.5m/result.json
+scene_193_dining_table_distance_4m,dining table,Table_RoundSmall2,True,distance,distance_4m,1,0,0,6.402691211000047,results/scene_193_dining_table_distance_4m/result.json
+scene_194_dining_table_visible_75pct,dining table,Table_RoundSmall2,True,occlusion,visible_75pct,1,0,0,7.608392919999915,results/scene_194_dining_table_visible_75pct/result.json
+scene_195_dining_table_visible_50pct,dining table,Table_RoundSmall2,True,occlusion,visible_50pct,1,0,0,5.859253251999917,results/scene_195_dining_table_visible_50pct/result.json
+scene_196_dining_table_visible_25pct,dining table,Table_RoundSmall2,True,occlusion,visible_25pct,0,0,1,9.155963462000045,results/scene_196_dining_table_visible_25pct/result.json
+scene_197_dining_table_dim,dining table,Table_RoundSmall2,True,lighting,dim,1,0,0,10.697905547000119,results/scene_197_dining_table_dim/result.json
+scene_198_dining_table_bright,dining table,Table_RoundSmall2,True,lighting,bright,1,0,0,9.800496130000056,results/scene_198_dining_table_bright/result.json
+scene_199_dining_table_side,dining table,Table_RoundSmall2,True,lighting,side,1,0,0,13.824006214000065,results/scene_199_dining_table_side/result.json
+scene_200_dining_table_mixed,dining table,Table_RoundSmall2,True,clutter,mixed,1,1,0,14.857963507000022,results/scene_200_dining_table_mixed/result.json
+scene_201_dining_table_similar_shape,dining table,Table_RoundSmall2,True,clutter,similar_shape,1,0,0,10.772186464000015,results/scene_201_dining_table_similar_shape/result.json
+scene_202_dining_table_focal_400px,dining table,Table_RoundSmall2,True,focal_length,focal_400px,1,0,0,8.890648628000008,results/scene_202_dining_table_focal_400px/result.json
+scene_203_dining_table_focal_700px,dining table,Table_RoundSmall2,True,focal_length,focal_700px,1,0,0,8.521164128999999,results/scene_203_dining_table_focal_700px/result.json
+scene_204_couch_absent_0,couch,Couch_Large1,False,target_presence,absent_0,0,0,0,8.662348046000034,results/scene_204_couch_absent_0/result.json
+scene_205_couch_absent_1,couch,Couch_Medium1,False,target_presence,absent_1,0,0,0,11.240019462999953,results/scene_205_couch_absent_1/result.json
+scene_206_couch_absent_2,couch,Couch_Small1,False,target_presence,absent_2,0,0,0,10.940357547000076,results/scene_206_couch_absent_2/result.json
+scene_207_chair_absent_0,chair,Chair_1,False,target_presence,absent_0,0,1,0,13.14158613099994,results/scene_207_chair_absent_0/result.json
+scene_208_chair_absent_1,chair,Chair_2,False,target_presence,absent_1,0,1,0,11.20925054700001,results/scene_208_chair_absent_1/result.json
+scene_209_chair_absent_2,chair,Chair_3,False,target_presence,absent_2,0,2,0,10.187607630000002,results/scene_209_chair_absent_2/result.json
+scene_210_bed_absent_0,bed,Bed_King,False,target_presence,absent_0,0,1,0,10.31995538000001,results/scene_210_bed_absent_0/result.json
+scene_211_bed_absent_1,bed,Bed_Single,False,target_presence,absent_1,0,1,0,10.329510338000091,results/scene_211_bed_absent_1/result.json
+scene_212_bed_absent_2,bed,Bed_Bunk,False,target_presence,absent_2,0,2,0,10.2408541719999,results/scene_212_bed_absent_2/result.json
+scene_213_dining_table_absent_0,dining table,Table_RoundLarge,False,target_presence,absent_0,0,2,0,10.749909671000069,results/scene_213_dining_table_absent_0/result.json
+scene_214_dining_table_absent_1,dining table,Table_RoundSmall,False,target_presence,absent_1,0,1,0,10.40219154700003,results/scene_214_dining_table_absent_1/result.json
+scene_215_dining_table_absent_2,dining table,Table_RoundSmall2,False,target_presence,absent_2,0,0,0,10.524247130000049,results/scene_215_dining_table_absent_2/result.json

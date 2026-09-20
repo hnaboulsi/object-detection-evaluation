@@ -1,5 +1,7 @@
-# Use a separate environment. The official MMCV stack may not build on macOS arm64.
--r requirements.txt
+# Optional, unverified dependency hints for a separate Linux environment.
+# Follow upstream YOLO-World's compatible torch/MMCV versions, not the DINO lock.
+Pillow
+numpy<2
 openmim
 setuptools==69.5.1
 wheel

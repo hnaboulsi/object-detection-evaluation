@@ -1,0 +1,21 @@
+name: Validate
+on:
+  push:
+  pull_request:
+
+jobs:
+  container:
+    strategy:
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build CPU image and test dependencies
+        run: docker build --target test -t detector-tests .
+      - name: Lint and format
+        run: docker run --rm detector-tests sh -c 'ruff check . && ruff format --check .'
+      - name: Unit and headless rendering tests
+        run: docker run --rm detector-tests python -m pytest -q
+      - name: Compile source
+        run: docker run --rm detector-tests python -m compileall -q detectors scenes tests *.py

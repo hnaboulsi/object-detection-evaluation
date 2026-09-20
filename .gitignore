@@ -6,6 +6,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.cache/
 MUJOCO_LOG.TXT
 
 data/
@@ -16,5 +17,4 @@ third_party/
 *.pt
 *.safetensors
 
-assets/*
-!assets/README.md
+assets/local/

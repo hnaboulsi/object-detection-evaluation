@@ -32,10 +32,6 @@ class YOLOWorld:
         max_detections: int = 100,
     ) -> None:
         resolved_device = resolve_device(device)
-        if resolved_device == "mps":
-            raise RuntimeError(
-                "Official YOLO-World/MMCV is not supported on MPS here; use --device cpu or CUDA"
-            )
         try:
             import torch
             import yolo_world  # noqa: F401  # registers official model classes
@@ -45,7 +41,8 @@ class YOLOWorld:
             from mmengine.dataset import Compose
         except ImportError as error:
             raise RuntimeError(
-                "Official YOLO-World/MMCV could not load. Use the isolated setup in the README; if MMCV native ops fail on Apple Silicon, run it on Linux/CUDA."
+                "Optional YOLO-World/MMCV dependencies could not load. "
+                "This adapter requires a separately validated Linux environment."
             ) from error
 
         self._torch = torch
@@ -55,30 +52,25 @@ class YOLOWorld:
         self._get_test_pipeline_cfg = get_test_pipeline_cfg
         self.device = resolved_device
         self.repo_path = (
-            Path(
-                repo_path or os.environ.get("YOLO_WORLD_REPO", DEFAULT_YOLO_WORLD_REPO)
-            )
+            Path(repo_path or os.environ.get("YOLO_WORLD_REPO", DEFAULT_YOLO_WORLD_REPO))
             .expanduser()
             .resolve()
         )
-        self.config_path = Path(
-            config_path or self.repo_path / DEFAULT_CONFIG
-        ).resolve()
+        self.config_path = Path(config_path or self.repo_path / DEFAULT_CONFIG).resolve()
         self.checkpoint_path = (
-            Path(
-                checkpoint_path
-                or os.environ.get("YOLO_WORLD_CHECKPOINT", DEFAULT_CHECKPOINT)
-            )
+            Path(checkpoint_path or os.environ.get("YOLO_WORLD_CHECKPOINT", DEFAULT_CHECKPOINT))
             .expanduser()
             .resolve()
         )
         if not self.config_path.is_file():
             raise RuntimeError(
-                f"YOLO-World config not found: {self.config_path}. Clone the official repository as described in the README."
+                f"YOLO-World config not found: {self.config_path}. "
+                "Set YOLO_WORLD_REPO to the official repository checkout."
             )
         if not self.checkpoint_path.is_file():
             raise RuntimeError(
-                f"YOLO-World checkpoint not found: {self.checkpoint_path}. Download the official V2.1-S checkpoint."
+                f"YOLO-World checkpoint not found: {self.checkpoint_path}. "
+                "Download the official V2.1-S checkpoint."
             )
         self.score_threshold = float(score_threshold)
         self.max_detections = int(max_detections)
@@ -99,7 +91,8 @@ class YOLOWorld:
         texts = [[prompt] for prompt in prompt_list] + [[" "]]
         self.model.reparameterize(texts)
         rgb = np.asarray(load_rgb_image(image))
-        data_info = self.pipeline({"img": rgb, "img_id": 0, "texts": texts})
+        # MMDetection's ndarray loader expects BGR, as in its OpenCV demo.
+        data_info = self.pipeline({"img": rgb[:, :, ::-1].copy(), "img_id": 0, "texts": texts})
         batch = {
             "inputs": data_info["inputs"].unsqueeze(0),
             "data_samples": [data_info["data_samples"]],
@@ -114,7 +107,7 @@ class YOLOWorld:
         values = instances.cpu().numpy()
         detections: list[Detection] = []
         for box, label_index, score in zip(
-            values["bboxes"], values["labels"], values["scores"]
+            values["bboxes"], values["labels"], values["scores"], strict=True
         ):
             index = int(label_index)
             if index >= len(prompt_list):

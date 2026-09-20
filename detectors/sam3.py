@@ -20,14 +20,16 @@ class SAM3:
         resolved_device = resolve_device(device)
         if resolved_device != "cuda":
             raise RuntimeError(
-                "Official SAM 3 requires a CUDA environment; install requirements-sam3.txt on a supported NVIDIA machine"
+                "Official SAM 3 requires CUDA. Install requirements-sam3.txt "
+                "in a supported NVIDIA environment."
             )
         try:
             from sam3.model.sam3_image_processor import Sam3Processor
             from sam3.model_builder import build_sam3_image_model
         except ImportError as error:
             raise RuntimeError(
-                "SAM 3 is not installed; use its separate Python 3.12/CUDA environment from requirements-sam3.txt"
+                "SAM 3 is not installed. Use a separate Python 3.12/CUDA environment "
+                "with requirements-sam3.txt."
             ) from error
 
         self.device = resolved_device
@@ -46,7 +48,8 @@ class SAM3:
             )
         except Exception as error:
             raise RuntimeError(
-                "SAM 3 could not load its gated checkpoint. Confirm Hugging Face access/authentication or pass checkpoint_path."
+                "SAM 3 could not initialize. Check the underlying error, CUDA compatibility, "
+                "and access to its gated Hugging Face checkpoint."
             ) from error
 
     def detect(self, image: ImageInput, prompts: Sequence[str]) -> list[Detection]:
@@ -58,7 +61,7 @@ class SAM3:
             output = self.processor.set_text_prompt(state=state, prompt=prompt)
             masks = output["masks"].detach().cpu().numpy()
             scores = output["scores"].detach().cpu().numpy()
-            for mask, score in zip(masks, scores):
+            for mask, score in zip(masks, scores, strict=True):
                 if float(score) < self.confidence_threshold:
                     continue
                 pixels = np.asarray(mask).squeeze().astype(bool)

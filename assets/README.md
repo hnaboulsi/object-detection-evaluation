@@ -1,5 +1,12 @@
-# Local OBJ assets
+# Furniture assets
 
-Put optional `.obj` files here. They are ignored by Git because research assets can be large or have separate licenses.
+Sixteen separate OBJ/MTL pairs from Quaternius' Ultimate House Interior Pack
+(June 2020), released under CC0 1.0. See `CC0-LICENSE.txt`.
 
-The loader treats one OBJ file as one semantic object. It does not load MTL files or textures. OBJ origin, units, and scale are not standardized, so adjust `--target-scale` and the generated target pose when an asset appears displaced or incorrectly sized.
+`scenes/assets.py` defines labels, source-axis scales, display colors and the
+Y-up to Z-up rotation. Floor offsets are computed from source vertex bounds.
+The renderer uses one mesh per furniture instance and flat registry colors;
+MTL files are retained for provenance but are not interpreted.
+
+Place personal assets under the ignored `assets/local/` directory. The curated
+benchmark references only the vendored files, so a fresh clone is sufficient.

@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "input_manifest_hash": "08406cc7a64c5fce74bb993184d263c739c9840acc2c81eec3ab6ab13a243f2d",
+  "case_count": 216,
+  "detector": {
+    "name": "grounding_dino",
+    "model_name": "IDEA-Research/grounding-dino-tiny",
+    "revision": "a2bb814dd30d776dcf7e30523b00659f4f141c71",
+    "device": "cpu",
+    "box_threshold": 0.1,
+    "text_threshold": 0.1,
+    "checkpoint_sha256": "1a2412ef99bd74bcd3c2a246fa1e48581f8889a1300c9051974741314fc042f3",
+    "torch_version": "2.6.0+cpu",
+    "transformers_version": "5.17.0",
+    "torch_threads": 4
+  },
+  "model_hash": "3babed10846d6aefee60b2ae156126e4c798e8d98e4bdeea373a244171f5e816",
+  "reporting_confidence_threshold": 0.35,
+  "reporting_iou_threshold": 0.5
+}

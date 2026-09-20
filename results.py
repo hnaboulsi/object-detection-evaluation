@@ -2,19 +2,22 @@
 
 from __future__ import annotations
 
-import csv
-import json
 import re
 from collections.abc import Sequence
-from dataclasses import asdict
-from pathlib import Path
 from typing import Any
 
 from PIL import Image, ImageDraw
 
 from detectors.base import Detection
 
-SCHEMA_VERSION = 1
+LABEL_ALIASES = {
+    "sofa": "couch",
+    "couch": "couch",
+    "chair": "chair",
+    "bed": "bed",
+    "table": "dining table",
+    "dining table": "dining table",
+}
 
 
 def bbox_iou(first: Sequence[float] | None, second: Sequence[float] | None) -> float:
@@ -35,61 +38,102 @@ def bbox_iou(first: Sequence[float] | None, second: Sequence[float] | None) -> f
     return intersection / union if union > 0 else 0.0
 
 
-def evaluate_single_target(
+def evaluate_instances(
     detections: Sequence[Detection],
-    ground_truth: dict[str, Any],
+    ground_truth: Sequence[dict[str, Any]],
+    prompts: Sequence[str],
+    *,
+    confidence_threshold: float = 0.35,
     iou_threshold: float = 0.5,
 ) -> dict[str, Any]:
-    """Match at most one detection to the one simulated or manually labeled target."""
-    target_visible = bool(ground_truth.get("target_visible", False))
-    target_bbox = ground_truth.get("bbox")
-    target_label = ground_truth.get("label")
-    overlaps = [
-        bbox_iou(detection.bbox, target_bbox)
-        if _labels_match(detection.label, target_label)
-        else 0.0
-        for detection in detections
+    """Greedily match score-ordered predictions to visible prompted instances."""
+    prompted = {canonical_label(prompt) for prompt in prompts}
+    truth = [
+        item
+        for item in ground_truth
+        if item.get("visible")
+        and item.get("bbox") is not None
+        and canonical_label(str(item.get("label", ""))) in prompted
     ]
-    best_index = (
-        max(range(len(overlaps)), key=overlaps.__getitem__) if overlaps else None
-    )
-    best_iou = overlaps[best_index] if best_index is not None else 0.0
-    matched = bool(target_visible and best_iou >= iou_threshold)
+    predictions = [
+        (index, detection)
+        for index, detection in enumerate(detections)
+        if detection.score >= confidence_threshold
+    ]
+    predictions.sort(key=lambda item: item[1].score, reverse=True)
+    unmatched_truth = set(range(len(truth)))
+    matches: list[dict[str, Any]] = []
+    unmatched_predictions: list[int] = []
+    best_unmatched_ious: list[float] = []
+    for original_index, detection in predictions:
+        label = canonical_label(detection.label)
+        candidates = [
+            (truth_index, bbox_iou(detection.bbox, truth[truth_index]["bbox"]))
+            for truth_index in sorted(unmatched_truth)
+            if canonical_label(str(truth[truth_index]["label"])) == label
+        ]
+        best = max(candidates, key=lambda item: item[1], default=None)
+        if best is not None and best[1] >= iou_threshold:
+            truth_index, overlap = best
+            unmatched_truth.remove(truth_index)
+            matches.append(
+                {
+                    "detection_index": original_index,
+                    "instance_id": truth[truth_index]["instance_id"],
+                    "iou": overlap,
+                }
+            )
+        else:
+            unmatched_predictions.append(original_index)
+            best_unmatched_ious.append(best[1] if best is not None else 0.0)
+    tp = len(matches)
+    fp = len(unmatched_predictions)
+    fn = len(unmatched_truth)
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     return {
+        "confidence_threshold": confidence_threshold,
         "iou_threshold": iou_threshold,
-        "matched_detection_index": best_index if matched else None,
-        "best_iou": best_iou,
-        "true_positives": int(matched),
-        "false_positives": len(detections) - int(matched),
-        "false_negatives": int(target_visible and not matched),
+        "true_positives": tp,
+        "false_positives": fp,
+        "false_negatives": fn,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "matches": matches,
+        "unmatched_detection_indices": unmatched_predictions,
+        "unmatched_instance_ids": [
+            truth[index]["instance_id"] for index in sorted(unmatched_truth)
+        ],
+        "best_iou_for_unmatched_predictions": best_unmatched_ious,
     }
 
 
-def _labels_match(detection_label: str, target_label: str | None) -> bool:
-    if not target_label:
-        return False
-    detected = set(re.findall(r"[a-z0-9]+", detection_label.lower()))
-    target = set(re.findall(r"[a-z0-9]+", target_label.lower()))
-    return bool(detected and target and (detected <= target or target <= detected))
-
-
-def draw_annotations(
+def draw_instance_annotations(
     image: Image.Image,
     detections: Sequence[Detection],
-    ground_truth_bbox: Sequence[float] | None = None,
+    ground_truth: Sequence[dict[str, Any]],
+    *,
+    confidence_threshold: float = 0.35,
 ) -> Image.Image:
     annotated = image.convert("RGB").copy()
     draw = ImageDraw.Draw(annotated)
-    if ground_truth_bbox is not None:
-        draw.rectangle(tuple(ground_truth_bbox), outline="cyan", width=3)
+    for item in ground_truth:
+        bbox = item.get("bbox")
+        if bbox is None:
+            continue
+        draw.rectangle(tuple(bbox), outline="cyan", width=3)
         draw.text(
-            (float(ground_truth_bbox[0]) + 3, float(ground_truth_bbox[1]) + 3),
-            "ground truth",
+            (float(bbox[0]) + 3, float(bbox[1]) + 3),
+            f"GT {item['label']}:{item['instance_id']}",
             fill="cyan",
             stroke_width=2,
             stroke_fill="black",
         )
     for detection in detections:
+        if detection.score < confidence_threshold:
+            continue
         x_min, y_min, x_max, y_max = detection.bbox
         draw.rectangle((x_min, y_min, x_max, y_max), outline="lime", width=3)
         draw.text(
@@ -102,96 +146,6 @@ def draw_annotations(
     return annotated
 
 
-def make_record(
-    *,
-    source: dict[str, Any],
-    scenario: dict[str, Any] | None,
-    detector: dict[str, Any],
-    prompts: Sequence[str],
-    detections: Sequence[Detection],
-    ground_truth: dict[str, Any] | None,
-    evaluation: dict[str, Any] | None,
-    inference_time_seconds: float,
-    metadata: dict[str, Any],
-) -> dict[str, Any]:
-    detector_info = dict(detector)
-    detector_info["prompts"] = list(prompts)
-    return {
-        "schema_version": SCHEMA_VERSION,
-        "source": source,
-        "scenario": scenario,
-        "detector": detector_info,
-        "ground_truth": ground_truth,
-        "detections": [asdict(detection) for detection in detections],
-        "evaluation": evaluation,
-        "inference_time_seconds": inference_time_seconds,
-        "metadata": metadata,
-    }
-
-
-def create_output_directory(path: Path) -> None:
-    """Create one result directory but never mix with existing result files."""
-    if path.exists() and any(path.iterdir()):
-        raise FileExistsError(
-            f"Refusing to overwrite nonempty output directory: {path}"
-        )
-    path.mkdir(parents=True, exist_ok=True)
-
-
-def write_json(path: Path, value: Any) -> None:
-    path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
-
-
-def rebuild_summary(output_root: Path) -> Path:
-    """Build summary.csv solely from independent result.json files."""
-    rows: list[dict[str, Any]] = []
-    for result_path in sorted(output_root.glob("*/result.json")):
-        record = json.loads(result_path.read_text(encoding="utf-8"))
-        scenario = record.get("scenario") or {}
-        ground_truth = record.get("ground_truth") or {}
-        evaluation = record.get("evaluation") or {}
-        detections = record.get("detections") or []
-        rows.append(
-            {
-                "id": record["source"]["id"],
-                "source_type": record["source"]["type"],
-                "room": scenario.get("room"),
-                "seed": scenario.get("seed"),
-                "target_type": scenario.get("target_type") or ground_truth.get("label"),
-                "target_present": ground_truth.get("target_present"),
-                "target_visible": ground_truth.get("target_visible"),
-                "detection_count": len(detections),
-                "best_confidence": max(
-                    (item["score"] for item in detections), default=0.0
-                ),
-                "best_iou": evaluation.get("best_iou"),
-                "true_positives": evaluation.get("true_positives"),
-                "false_positives": evaluation.get("false_positives"),
-                "false_negatives": evaluation.get("false_negatives"),
-                "inference_time_seconds": record.get("inference_time_seconds"),
-                "result_path": str(result_path.relative_to(output_root)),
-            }
-        )
-    summary_path = output_root / "summary.csv"
-    fieldnames = [
-        "id",
-        "source_type",
-        "room",
-        "seed",
-        "target_type",
-        "target_present",
-        "target_visible",
-        "detection_count",
-        "best_confidence",
-        "best_iou",
-        "true_positives",
-        "false_positives",
-        "false_negatives",
-        "inference_time_seconds",
-        "result_path",
-    ]
-    with summary_path.open("w", encoding="utf-8", newline="") as output_file:
-        writer = csv.DictWriter(output_file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-    return summary_path
+def canonical_label(value: str) -> str:
+    cleaned = " ".join(re.findall(r"[a-z0-9]+", value.lower()))
+    return LABEL_ALIASES.get(cleaned, cleaned)

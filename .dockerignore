@@ -1,0 +1,10 @@
+.git
+.venv*
+.cache
+data
+outputs
+reports
+third_party
+weights
+__pycache__
+*.pyc

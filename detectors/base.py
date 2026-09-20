@@ -44,16 +44,12 @@ def load_rgb_image(image: ImageInput) -> Image.Image:
             raise ValueError("NumPy images must have shape (height, width, 3)")
         if np.issubdtype(image.dtype, np.floating):
             if not np.isfinite(image).all() or image.min() < 0:
-                raise ValueError(
-                    "Floating-point images must contain finite values >= 0"
-                )
+                raise ValueError("Floating-point images must contain finite values >= 0")
             maximum = float(image.max()) if image.size else 0.0
             if maximum <= 1.0:
                 image = image * 255.0
             elif maximum > 255.0:
-                raise ValueError(
-                    "Floating-point image values must be in [0, 1] or [0, 255]"
-                )
+                raise ValueError("Floating-point image values must be in [0, 1] or [0, 255]")
         array = np.clip(image, 0, 255).astype(np.uint8)
         return Image.fromarray(array, mode="RGB")
     raise TypeError("image must be a path, PIL image, or NumPy RGB array")
@@ -67,9 +63,9 @@ def clean_prompts(prompts: Sequence[str]) -> list[str]:
 
 
 def resolve_device(requested: str) -> str:
-    """Resolve auto/cpu/mps/cuda without importing any model adapter."""
-    if requested not in {"auto", "cpu", "mps", "cuda"}:
-        raise ValueError("device must be one of: auto, cpu, mps, cuda")
+    """Resolve auto/cpu/cuda without importing any model adapter."""
+    if requested not in {"auto", "cpu", "cuda"}:
+        raise ValueError("device must be one of: auto, cpu, cuda")
     try:
         import torch
     except ImportError as error:
@@ -77,12 +73,8 @@ def resolve_device(requested: str) -> str:
 
     if requested == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA was requested but is not available")
-    if requested == "mps" and not torch.backends.mps.is_available():
-        raise RuntimeError("MPS was requested but is not available")
     if requested != "auto":
         return requested
     if torch.cuda.is_available():
         return "cuda"
-    if torch.backends.mps.is_available():
-        return "mps"
     return "cpu"

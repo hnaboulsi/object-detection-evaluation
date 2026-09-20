@@ -1,143 +1,157 @@
 # Object Detection Evaluation
 
-A small research utility for asking one question: under which controlled visual conditions does an object detector fail?
+A small, reproducible study of when Grounding DINO fails in furnished MuJoCo rooms.
 
-It generates static MuJoCo room scenes, renders a fixed quadruped-style camera, runs an open-vocabulary detector, and saves data for analyzing false positives and false negatives. The same detector interface also runs on normal house photographs.
+The house shell is built from MuJoCo boxes: floors, walls, door openings, and a ceiling. Furniture comes from separate CC0 OBJ files, with independent poses and instance labels. Render once, then run detectors against the same saved images. Camera intrinsics are explicit and editable.
 
-## Install Grounding DINO and MuJoCo
+This release evaluates **Grounding DINO Tiny only**. The retained YOLO-World and SAM 3 adapters are experimental and have not been validated by this study.
 
-Python 3.11 is the simplest local setup on this Mac:
+## Quick start
 
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
+Install Docker with Docker Compose and start the Docker engine. Allow roughly 8 GB of container memory and 5 GB of free disk space. The CPU image supports Linux ARM64 and AMD64. First inference downloads about 700 MB of public model assets; no account or token is required.
 
-Grounding DINO downloads `IDEA-Research/grounding-dino-tiny` from Hugging Face on first use. If the Hugging Face Xet transport stalls, run with `HF_HUB_DISABLE_XET=1`.
-
-## Collect MuJoCo scenarios
+Run these commands from a terminal. The repository is private, so Git must have access to it.
 
 ```bash
-python collect_mujoco.py \
-  --detector grounding_dino \
-  --room living_room \
-  --seed 7 \
-  --count 20 \
-  --output data/mujoco \
-  --device auto
+git clone https://github.com/hnaboulsi/object-detection-evaluation.git
+cd object-detection-evaluation
+export LOCAL_UID="$(id -u)" LOCAL_GID="$(id -g)"
+mkdir -p .cache data outputs reports
+docker compose build
+docker compose run --rm eval python render_experiment.py
+docker compose run --rm eval python run_detector.py --device cpu
+docker compose run --rm eval python analyze_experiment.py
+docker compose run --rm eval python verify_experiment.py --run outputs/dino_controlled_v1 --output reports/controlled_v1/validation.json
 ```
 
-Add `--save-depth` to save `depth.npy`. Depth is recorded for later analysis and is never passed to the detector. Add `--examples --count 18` to render the 18 handwritten conditions instead of random scenarios. Add `--prompts couch furniture` to override each generated target prompt.
+Open [the report](reports/controlled_v1/REPORT.md). It contains class and condition breakdowns, precision-recall plots, and annotated failure examples. Cyan boxes show visible instance ground truth; green boxes show predictions at confidence 0.35.
 
-The current macOS renderer warns that `ARB_clip_control` is unavailable and depth accuracy is limited. Treat saved depth as exploratory until it is checked against known scene distances or captured on the calibrated Go2 sensor.
+To inspect the layout from above, run `docker compose run --rm eval python preview_house.py`.
+It saves `outputs/house_overview.png` with only the ceiling hidden for the preview.
 
-Each scenario is generated from `np.random.default_rng(derived_seed)`. The derived seed depends only on `--seed` and the scenario index, so rerunning the same pair reproduces the same scenario. Use `--start-index` to create a later batch without changing earlier indices.
+The full study contains 216 images and takes minutes to tens of minutes on CPU, depending on available cores. Each command prints progress. Model downloads can take longer on the first run. The container uses four inference threads by default.
 
-The three rooms are `living_room`, `bedroom`, and `dining_room`. Generated values directly control target presence and pose, camera position/yaw/pitch/FOV, lighting, occluders, clutter, and similar-object distractors. `place_camera_looking_at(...)` in `scenes/generate.py` is the small helper used for front, side, rear, high, low, close, and far views.
-
-The camera mount is only a provisional Go2-like front viewpoint. Its pose, field of view, and depth alignment have not been calibrated against a physical Unitree Go2 camera.
-
-## Collect real-house images
+For a quick end-to-end check in separate directories:
 
 ```bash
-python collect_images.py \
-  --input house_images \
-  --detector grounding_dino \
-  --prompts couch bed table \
-  --output data/house
+docker compose run --rm eval python render_experiment.py --output data/smoke --limit 1
+docker compose run --rm eval python run_detector.py --dataset data/smoke --output outputs/smoke --device cpu --limit 1
+docker compose run --rm eval python analyze_experiment.py --dataset data/smoke --run outputs/smoke --report outputs/smoke-report --allow-incomplete
 ```
 
-`--input` can be one image or a directory. With no labels, detections are saved and evaluation fields are null. Optional manual ground truth is a JSON mapping from filename to one target:
+## Resume a run
+
+Use the same configuration and add `--resume`:
+
+```bash
+docker compose run --rm eval python render_experiment.py --resume
+docker compose run --rm eval python run_detector.py --device cpu --resume
+```
+
+Completed scenes are skipped only when the manifest, case, and image checksums match. Completed detector results also require matching scene and model hashes, including the checkpoint checksum and inference settings. A conflicting or corrupted completed artifact produces an error. Use a new output directory for changed code, assets, camera settings, or detector thresholds.
+
+If an interruption leaves an unfinished per-scene directory, the error identifies it. Move that specific directory outside the dataset or run, then resume. Other completed scenes are preserved. Keep the model cache to avoid downloading weights again.
+
+## Change the camera
+
+Edit [configs/camera.json](configs/camera.json):
 
 ```json
 {
-  "living-room-01.jpg": {
-    "label": "couch",
-    "target_present": true,
-    "target_visible": true,
-    "bbox": [115, 92, 540, 410]
-  }
+  "width": 640,
+  "height": 480,
+  "fx": 525.0,
+  "fy": 525.0,
+  "cx": 319.5,
+  "cy": 239.5
 }
 ```
 
-Pass it with `--ground-truth labels.json`. Real-image evaluation currently supports one target per image; visible targets require both `label` and `bbox`.
+Focal lengths and principal points are in pixels. Pixel centers use a top-left origin; image-right is positive X and image-down is positive Y. The centered principal point is `((width - 1) / 2, (height - 1) / 2)`. Values are converted to MuJoCo's centered sensor convention internally and verified with rendered projection tests. Unequal `fx` and `fy` are supported. This is a pinhole camera without lens distortion.
 
-## Detector interface
+These values govern every condition except the explicitly named focal-length experiments, which set both focal lengths to 400 or 700 pixels. Image resolution is passed to both the MuJoCo camera and rendering context. Camera pose is separate from intrinsics.
 
-All three adapters accept a path, PIL image, or NumPy RGB array and return pixel-space xyxy boxes:
+After editing the configuration, select fresh directories:
+
+```bash
+docker compose run --rm eval python render_experiment.py --camera-config configs/camera.json --output data/custom-camera --limit 1
+docker compose run --rm eval python run_detector.py --dataset data/custom-camera --output outputs/custom-camera --device cpu --limit 1
+docker compose run --rm eval python analyze_experiment.py --dataset data/custom-camera --run outputs/custom-camera --report outputs/custom-camera-report --allow-incomplete
+```
+
+This preview renders one scene; omit `--limit 1` and `--allow-incomplete` for a full run.
+The default camera is synthetic. No physical-camera calibration or simulation-to-real accuracy is claimed.
+
+## What the experiment measures
+
+Four prompted classes, each with three OBJ variants: couch, chair, bed, and dining table. Every variant has 17 positive conditions: baseline; four azimuths; two distances; three measured occlusion levels; three lighting conditions; two clutter conditions; and two focal lengths. Twelve absent-class controls bring the total to 216.
+
+Each positive condition changes one factor relative to its asset's baseline. Azimuth is measured from the front view; the baseline distance is 2.5 m and camera height is 0.55 m. The occlusion search uses a separate reference rendering and adjusts a plain blocker until the target's visible-pixel count is close to 75%, 50%, or 25% of that reference. Exact achieved fractions are saved.
+
+The study uses one class prompt per image. All visible instances of that prompted class are eligible ground truth. A score-ordered, one-to-one matcher at IoU 0.50 counts duplicate detections as false positives. Other furniture is annotated for inspection but is not a missed detection when it was not prompted. Absent-class controls contain no visible instance of the queried class.
+
+Grounding DINO saves predictions above 0.10 with text threshold 0.10. The primary results use confidence 0.35. AP50 uses every saved score with 101-point interpolated precision; results below the collection threshold are unavailable. The report distinguishes pooled AP from the mean of per-class AP values. Thresholds are fixed before the batch; they are not selected to maximize these results.
+
+Ground-truth boxes enclose **visible** segmentation pixels, not the hidden extent of an occluded object. Thus a reasonable whole-object prediction can fail IoU under heavy occlusion. Close views and long focal lengths can also crop objects. Low-poly geometry, flat per-object colors, a fixed house layout, and only three variants per class limit generalization. Treat the results as controlled failure probes, not a broad model ranking.
+
+## Files and code
+
+`data/controlled_v1/manifest.json` fixes every case, camera configuration, asset checksum, and rendering-source checksum. Each scene directory holds `rgb.png` and schema-v2 `scene.json`.
+
+`outputs/dino_controlled_v1/` holds the detector configuration, per-image predictions and annotations, and a summary CSV. Raw runs and model caches are ignored by Git.
+
+`reports/controlled_v1/` holds the compact shareable evidence: manifest, model configuration, checksums, per-scene counts, aggregates, plots, and a curated gallery. Raw model weights and all rendered images are not committed.
+
+The main entry points are `render_experiment.py`, `run_detector.py`, and `analyze_experiment.py`. `scenes/house.py` defines the house and object placements; `scenes/assets.py` is the small asset registry. Scale is expressed in source OBJ axes, with Y-up converted to MuJoCo Z-up and an automatically computed floor alignment. Materials use the registry's flat display colors; original MTL files are retained for provenance but not rendered.
+
+Detector adapters share the existing interface:
 
 ```python
 from detectors import create_detector
 
-detector = create_detector("grounding_dino", device="auto")
-detections = detector.detect(image, ["couch", "bed"])
+detector = create_detector("grounding_dino", device="cpu")
+detections = detector.detect("image.png", ["couch", "bed"])
+# Detection(label, score, bbox, model_name), with pixel-space xyxy boxes.
 ```
 
-Each result is `Detection(label, score, bbox, model_name)`. `device="auto"` selects CUDA, then MPS, then CPU. Both collectors call this same interface.
+Schema-v1 random-scene outputs and the old `collect_mujoco.py` path have been replaced by the frozen-manifest workflow. Rerender old experiments using the new commands.
 
-Grounding DINO uses Hugging Face Transformers. YOLO-World uses the official AILab-CVC repository and SAM 3 uses Meta's official image builder and processor. Each optional adapter loads its dependencies only when selected.
+## Photographs and future detectors
 
-## Official YOLO-World environment
-
-YOLO-World's official MMDetection/MMCV stack is separate and is primarily a Linux/CUDA stack:
+For photographs, pass a single image or directory. Optional ground truth maps filenames to lists of records with `instance_id`, `label`, `visible`, and `bbox`. An empty list means the queried objects are absent; a missing filename means unlabeled.
 
 ```bash
-python3.11 -m venv .venv-yolo
-source .venv-yolo/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements-yolo-world.txt
-python -m pip install --no-build-isolation mmcv==2.0.0
-git clone https://github.com/onuralpszr/mmyolo.git third_party/mmyolo
-git -C third_party/mmyolo checkout 4d97b3a06609dba94b8ec584be2f2029cfdb7519
-python -m pip install --no-build-isolation -e third_party/mmyolo
-git clone https://github.com/AILab-CVC/YOLO-World third_party/YOLO-World
-git -C third_party/YOLO-World checkout 4f70adbaacf5685bd9ec5bea85f1f91057f6fc0b
-python -m pip install --no-build-isolation --no-deps -e third_party/YOLO-World
-mkdir -p weights
-curl -L https://huggingface.co/wondervictor/YOLO-World-V2.1/resolve/main/s_stage2-4466ab94.pth \
-  -o weights/s_stage2-4466ab94.pth
+docker compose run --rm eval python collect_images.py --input house_images --prompts couch bed --output outputs/photographs --device cpu
 ```
 
-Then use `--detector yolo_world --device cpu` or CUDA. The adapter uses the official V2.1-S 1280 configuration, calls `model.reparameterize(texts)`, runs the official MMDetection test pipeline, and maps class indices back to prompts.
+The photographs must be inside the checkout so the container can see them. Unlabeled photographs save predictions with null evaluation fields.
 
-On the current Apple M4, MMCV 2.0.0 compiled successfully, but importing its native extension failed on a missing `at::mps::MPSStream::commit` symbol before YOLO-World inference could run. The adapter is implemented against the official API but is not runtime-verified here. Linux with an NVIDIA CUDA environment is the supported practical path.
+YOLO-World and SAM 3 are outside the tested CPU image. Their optional requirement files are dependency hints, not validated lockfiles. They need separate upstream-compatible environments and checkpoints. SAM 3 requires gated model access and a supported NVIDIA CUDA environment. Keep their outputs separate and use the same rendered manifest when they are validated; this repository currently has no three-detector comparison results.
 
-## Official SAM 3 environment
+## Development and checks
 
-SAM 3 needs a separate Python 3.12 environment, a supported NVIDIA CUDA system, and access to Meta's gated Hugging Face checkpoint:
+The test image runs without downloading detector weights:
 
 ```bash
-python3.12 -m venv .venv-sam3
-source .venv-sam3/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements-sam3.txt
-huggingface-cli login
+docker build --target test -t object-detection-evaluation:test .
+docker run --rm object-detection-evaluation:test
+docker run --rm object-detection-evaluation:test sh -c 'ruff check . && ruff format --check .'
 ```
 
-The adapter calls `build_sam3_image_model`, `Sam3Processor.set_image`, and `set_text_prompt`. It converts each returned mask to its enclosing xyxy bounding box and reports unavailable CUDA or checkpoint access directly.
+CI builds and tests on Linux AMD64 and ARM64. It covers rendering, camera projection, asset alignment, deterministic manifests, matching, metrics, and artifact validation.
 
-## Custom OBJ targets
+## Troubleshooting
 
-```bash
-python collect_mujoco.py \
-  --detector grounding_dino \
-  --room living_room \
-  --seed 4 \
-  --count 1 \
-  --output data/custom \
-  --target-obj assets/my_object.obj \
-  --target-label mug \
-  --target-scale 0.01 0.01 0.01
-```
+If Docker cannot connect, start the Docker engine and retry. If a mounted directory is not writable, export `LOCAL_UID` and `LOCAL_GID` as shown above, and create the output/cache directories before running containers.
 
-Only OBJ geometry is loaded. One OBJ is one semantic target, MTL files and textures are ignored, and the target geoms keep stable `target__...` names for segmentation. Programmatic callers can construct the same object with `ObjectSpec.from_obj_dict(...)` using `name`, `label`, `obj_path`, `position`, and optional `rotation_deg`, `scale`, and `color`.
+For a model-download timeout, rerun with `--resume`; Hugging Face reuses cached files. The default configuration disables Xet transport. The container is CPU-only, so do not request `--device cuda` inside it.
 
-## Saved result
+An out-of-memory exit usually means Docker's memory allowance is too small. Increase it to at least 8 GB and keep one detector process running at a time. Thread count is adjustable through the Compose environment if CPU oversubscription affects throughput.
 
-Every test has its own directory containing `rgb.png`, `annotated.png`, `result.json`, and optional `depth.npy`. Existing nonempty test directories are never overwritten. `summary.csv` is rebuilt by reading the independent JSON files.
+To reclaim storage, stop the containers, then remove only the specific generated dataset/run directories you no longer need. Deleting `.cache/huggingface` also removes downloaded model weights and forces another download. Reports and source assets are separate from those generated directories.
 
-`result.json` stores the source paths; every controlled scenario value; camera and target pose; prompts; detector model, device, and thresholds; every detection; segmentation visibility, bbox, and visible-pixel count; best IoU; TP/FP/FN; inference time; MuJoCo version; and the provisional-camera/depth flags.
+## Assets and model provenance
 
-MuJoCo ground truth comes from target geom segmentation. A visible target matches at IoU 0.5. An unmatched visible target is a false negative. Every unmatched prediction is a false positive. If the target is absent or fully outside/hidden from the camera, every prediction is a false positive and no false negative is counted. Real-house ground truth is manual and uses the same record fields.
+Furniture: Quaternius, “Ultimate House Interior Pack,” June 2020, CC0 1.0. The selected 16 OBJ/MTL pairs and supplied license are included in `assets/`.
+
+Grounding DINO Tiny: `IDEA-Research/grounding-dino-tiny`, pinned revision `a2bb814dd30d776dcf7e30523b00659f4f141c71`. Each run records the downloaded weight checksum, PyTorch and Transformers versions, device, and thresholds. Linux container validation and executed experiment evidence are documented in the report.

@@ -1,0 +1,19 @@
+services:
+  eval:
+    build:
+      context: .
+      target: runtime
+    image: object-detection-evaluation:cpu
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    working_dir: /workspace
+    environment:
+      HF_HOME: /cache/huggingface
+      MPLCONFIGDIR: /cache/matplotlib
+      MUJOCO_GL: osmesa
+      OMP_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+      HF_HUB_DISABLE_XET: "1"
+      XDG_CACHE_HOME: /cache
+    volumes:
+      - .:/workspace
+      - ./.cache:/cache
