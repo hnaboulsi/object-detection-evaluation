@@ -1,4 +1,4 @@
-"""Metric and failure-analysis functions for saved detector runs."""
+"""Aggregate metrics and classify failures in saved detector runs."""
 
 from __future__ import annotations
 
@@ -15,9 +15,14 @@ from artifacts import (
     validate_scene_instances,
 )
 from detectors.base import Detection
-from results import bbox_iou, canonical_label, evaluate_instances
+from evaluation import (
+    IOU_THRESHOLD,
+    REPORTING_THRESHOLD,
+    bbox_iou,
+    canonical_label,
+    evaluate_instances,
+)
 
-REPORTING_THRESHOLD = 0.35
 CONFIDENCE_SWEEP = tuple(round(value / 100, 2) for value in range(10, 91, 5))
 
 Record = dict[str, Any]
@@ -190,7 +195,7 @@ def _classify_false_positives(
         prediction = record["detections"][index]
         overlaps = [(bbox_iou(prediction["bbox"], item["bbox"]), item) for item in truth]
         overlap, item = max(overlaps, key=lambda pair: pair[0], default=(0.0, None))
-        if overlap >= 0.5:
+        if overlap >= IOU_THRESHOLD:
             labels_match = canonical_label(prediction["label"]) == canonical_label(item["label"])
             reason = "duplicate_fp" if labels_match else "wrong_label_fp"
         else:
@@ -213,7 +218,7 @@ def _classify_false_negatives(
             if canonical_label(prediction["label"]) == canonical_label(item["label"])
         ]
         if any(
-            bbox_iou(prediction["bbox"], item["bbox"]) >= 0.5
+            bbox_iou(prediction["bbox"], item["bbox"]) >= IOU_THRESHOLD
             and prediction["score"] < REPORTING_THRESHOLD
             for prediction in candidates
         ):
@@ -249,8 +254,12 @@ def paired_conditions(records: list[Record]) -> list[Record]:
         for record in group:
             baseline = baselines[record["case"]["target_asset_id"]]
             evaluation = evaluate_record(record, REPORTING_THRESHOLD)
-            baseline_detected = _target_was_matched(baseline)
-            condition_detected = _target_was_matched(evaluation)
+            baseline_detected = any(
+                match["instance_id"] == "target" for match in baseline["matches"]
+            )
+            condition_detected = any(
+                match["instance_id"] == "target" for match in evaluation["matches"]
+            )
             new_misses += int(baseline_detected and not condition_detected)
             recoveries += int(condition_detected and not baseline_detected)
             false_positive_delta += evaluation["false_positives"] - baseline["false_positives"]
@@ -264,10 +273,6 @@ def paired_conditions(records: list[Record]) -> list[Record]:
             }
         )
     return rows
-
-
-def _target_was_matched(evaluation: Record) -> bool:
-    return any(match["instance_id"] == "target" for match in evaluation["matches"])
 
 
 def _safe_ratio(numerator: float, denominator: float) -> float:

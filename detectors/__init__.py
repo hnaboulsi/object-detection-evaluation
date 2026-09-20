@@ -1,6 +1,6 @@
-"""Object detector adapters with one shared output type."""
+"""Detector contracts and the validated Grounding DINO adapter."""
 
 from .base import Detection, Detector
-from .create import create_detector
+from .grounding_dino import GroundingDINO
 
-__all__ = ["Detection", "Detector", "create_detector"]
+__all__ = ["Detection", "Detector", "GroundingDINO"]

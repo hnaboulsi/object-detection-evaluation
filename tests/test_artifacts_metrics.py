@@ -5,7 +5,7 @@ from dataclasses import asdict
 
 import pytest
 
-from analyze_experiment import (
+from analysis import (
     aggregate,
     detection_ap50,
     failure_patterns,

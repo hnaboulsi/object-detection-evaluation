@@ -4,7 +4,7 @@ A small, reproducible study of when Grounding DINO fails in furnished MuJoCo roo
 
 The house shell is built from MuJoCo boxes: floors, walls, door openings, and a ceiling. Furniture comes from separate CC0 OBJ files, with independent poses and instance labels. Render once, then run detectors against the same saved images. Camera intrinsics are explicit and editable.
 
-This release evaluates **Grounding DINO Tiny only**. The retained YOLO-World and SAM 3 adapters are experimental and have not been validated by this study.
+This release evaluates **Grounding DINO Tiny only**. The shared detector contract is kept for future Linux adapters, but this repository contains one validated adapter and one canonical study.
 
 ## Quick start
 
@@ -102,21 +102,25 @@ Ground-truth boxes enclose **visible** segmentation pixels, not the hidden exten
 
 `reports/controlled_v1/` holds the compact shareable evidence: manifest, model configuration, checksums, per-scene counts, aggregates, plots, and a curated gallery. Raw model weights and all rendered images are not committed.
 
-The main entry points are `render_experiment.py`, `run_detector.py`, and `analyze_experiment.py`. `scenes/house.py` defines the house and object placements; `scenes/assets.py` is the small asset registry. Scale is expressed in source OBJ axes, with Y-up converted to MuJoCo Z-up and an automatically computed floor alignment. Materials use the registry's flat display colors; original MTL files are retained for provenance but not rendered.
+The main entry points are `render_experiment.py` (render the frozen manifest), `run_detector.py` (run Grounding DINO), `analyze_experiment.py` (write the report), and `collect_images.py` (optional photographs). Scenario definitions are in `experiment.py`; MuJoCo construction and segmentation ground truth are in `scenes/`; IoU matching is in `evaluation.py`; aggregate metrics are in `analysis.py`. Edit `experiment.py:controlled_cases` to add or change a controlled condition.
 
-Detector adapters share the existing interface:
+`scenes/house.py` defines the house and object placements; `scenes/assets.py` is the small asset registry. Scale is expressed in source OBJ axes, with Y-up converted to MuJoCo Z-up and automatically aligned to the floor. Materials use the registry's flat display colors; original MTL files are retained for provenance but not rendered.
+
+The shared detector contract is small and remains available to future adapters:
 
 ```python
-from detectors import create_detector
+from detectors import GroundingDINO
 
-detector = create_detector("grounding_dino", device="cpu")
+detector = GroundingDINO(device="cpu")
 detections = detector.detect("image.png", ["couch", "bed"])
 # Detection(label, score, bbox, model_name), with pixel-space xyxy boxes.
 ```
 
 Schema-v1 random-scene outputs and the old `collect_mujoco.py` path have been replaced by the frozen-manifest workflow. Rerender old experiments using the new commands.
 
-## Photographs and future detectors
+Read [CODEBASE_GUIDE.md](CODEBASE_GUIDE.md) for the file-by-file architecture and [EXPERIMENT_GUIDE.md](EXPERIMENT_GUIDE.md) for the practical workflow for making and inspecting scenes.
+
+## Photographs
 
 For photographs, pass a single image or directory. Optional ground truth maps filenames to lists of records with `instance_id`, `label`, `visible`, and `bbox`. An empty list means the queried objects are absent; a missing filename means unlabeled.
 
@@ -125,8 +129,6 @@ docker compose run --rm eval python collect_images.py --input house_images --pro
 ```
 
 The photographs must be inside the checkout so the container can see them. Unlabeled photographs save predictions with null evaluation fields.
-
-YOLO-World and SAM 3 are outside the tested CPU image. Their optional requirement files are dependency hints, not validated lockfiles. They need separate upstream-compatible environments and checkpoints. SAM 3 requires gated model access and a supported NVIDIA CUDA environment. Keep their outputs separate and use the same rendered manifest when they are validated; this repository currently has no three-detector comparison results.
 
 ## Development and checks
 

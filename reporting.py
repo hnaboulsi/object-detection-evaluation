@@ -7,7 +7,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-from analysis_metrics import REPORTING_THRESHOLD, evaluate_record
+from analysis import REPORTING_THRESHOLD, evaluate_record
 
 Record = dict[str, Any]
 
@@ -59,7 +59,12 @@ def build_gallery(records: list[Record], run: Path, report: Path) -> list[dict[s
             {
                 "scene_id": record["scene_id"],
                 "image": f"gallery/{destination.name}",
-                "summary": _gallery_summary(record, evaluation),
+                "summary": (
+                    f"{record['case']['target_label']}, "
+                    f"{record['case']['factor']}:{record['case']['level']}, "
+                    f"TP={evaluation['true_positives']} "
+                    f"FP={evaluation['false_positives']} FN={evaluation['false_negatives']}"
+                ),
             }
         )
         used_groups.add(group)
@@ -76,15 +81,6 @@ def _rank_failures(records: list[Record]) -> list[tuple[int, Record, Record]]:
         if severity:
             ranked.append((severity, record, evaluation))
     return sorted(ranked, key=lambda item: (-item[0], item[1]["scene_id"]))
-
-
-def _gallery_summary(record: Record, evaluation: Record) -> str:
-    case = record["case"]
-    return (
-        f"{case['target_label']}, {case['factor']}:{case['level']}, "
-        f"TP={evaluation['true_positives']} FP={evaluation['false_positives']} "
-        f"FN={evaluation['false_negatives']}"
-    )
 
 
 def create_plots(report: Path, grouped_rows: list[Record], curve: list[Record]) -> None:

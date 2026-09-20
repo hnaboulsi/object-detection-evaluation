@@ -1,4 +1,4 @@
-"""Small shared helpers for saved experiment results."""
+"""Reusable IoU matching and image annotation for detector results."""
 
 from __future__ import annotations
 
@@ -18,6 +18,9 @@ LABEL_ALIASES = {
     "table": "dining table",
     "dining table": "dining table",
 }
+
+IOU_THRESHOLD = 0.5
+REPORTING_THRESHOLD = 0.35
 
 
 def bbox_iou(first: Sequence[float] | None, second: Sequence[float] | None) -> float:
@@ -43,8 +46,8 @@ def evaluate_instances(
     ground_truth: Sequence[dict[str, Any]],
     prompts: Sequence[str],
     *,
-    confidence_threshold: float = 0.35,
-    iou_threshold: float = 0.5,
+    confidence_threshold: float = REPORTING_THRESHOLD,
+    iou_threshold: float = IOU_THRESHOLD,
 ) -> dict[str, Any]:
     """Greedily match score-ordered predictions to visible prompted instances."""
     prompted = {canonical_label(prompt) for prompt in prompts}
@@ -115,7 +118,7 @@ def draw_instance_annotations(
     detections: Sequence[Detection],
     ground_truth: Sequence[dict[str, Any]],
     *,
-    confidence_threshold: float = 0.35,
+    confidence_threshold: float = REPORTING_THRESHOLD,
 ) -> Image.Image:
     annotated = image.convert("RGB").copy()
     draw = ImageDraw.Draw(annotated)

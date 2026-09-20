@@ -10,8 +10,8 @@ from pathlib import Path
 from PIL import Image
 
 from artifacts import file_hash, read_json, validate_instances, write_json
-from detectors import create_detector
-from results import draw_instance_annotations, evaluate_instances
+from detectors import GroundingDINO
+from evaluation import draw_instance_annotations, evaluate_instances
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff"}
 
@@ -34,9 +34,6 @@ def main() -> None:
     parser.add_argument("--prompts", required=True, nargs="+")
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="cpu")
     parser.add_argument(
-        "--detector", choices=("grounding_dino", "yolo_world", "sam3"), default="grounding_dino"
-    )
-    parser.add_argument(
         "--ground-truth",
         type=Path,
         help="JSON mapping image filenames to lists of instance records",
@@ -48,7 +45,7 @@ def main() -> None:
         raise FileExistsError(f"Choose a new empty output directory: {args.output}")
     for instances in labels.values():
         validate_instances(instances)
-    detector = create_detector(args.detector, device=args.device)
+    detector = GroundingDINO(device=args.device)
     args.output.mkdir(parents=True, exist_ok=True)
     for index, path in enumerate(images):
         directory = args.output / f"image_{index:06d}"

@@ -8,7 +8,7 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-from analysis_metrics import (
+from analysis import (
     CONFIDENCE_SWEEP,
     REPORTING_THRESHOLD,
     aggregate,

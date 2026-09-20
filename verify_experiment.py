@@ -10,7 +10,9 @@ from pathlib import Path
 
 from PIL import Image
 
+from analysis import aggregate, load_results
 from artifacts import file_hash, read_json, safe_artifact_path, validate_scene_instances, write_json
+from evaluation import REPORTING_THRESHOLD
 from experiment import build_manifest, read_manifest
 from scenes.camera import CameraIntrinsics
 
@@ -71,8 +73,6 @@ def verify_dataset(dataset: Path) -> dict:
 
 
 def verify_run(dataset: Path, run: Path) -> dict:
-    from analyze_experiment import aggregate, load_results
-
     validation = verify_dataset(dataset)
     records = load_results(run, validation["manifest_hash"])
     manifest = read_manifest(dataset / "manifest.json")
@@ -89,7 +89,7 @@ def verify_run(dataset: Path, run: Path) -> dict:
         ):
             raise ValueError(f"Result disagrees with source scene: {record['scene_id']}")
     validation["completed_results"] = len(records)
-    validation["metrics"] = aggregate(records, 0.35)
+    validation["metrics"] = aggregate(records, REPORTING_THRESHOLD)
     return validation
 
 

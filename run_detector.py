@@ -21,22 +21,20 @@ from artifacts import (
     validate_scene_instances,
     write_json,
 )
-from detectors import create_detector
+from detectors import GroundingDINO
+from evaluation import (
+    IOU_THRESHOLD,
+    REPORTING_THRESHOLD,
+    draw_instance_annotations,
+    evaluate_instances,
+)
 from experiment import read_manifest
-from results import draw_instance_annotations, evaluate_instances
-
-REPORTING_THRESHOLD = 0.35
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, default=Path("data/controlled_v1"))
     parser.add_argument("--output", type=Path, default=Path("outputs/dino_controlled_v1"))
-    parser.add_argument(
-        "--detector",
-        choices=("grounding_dino", "yolo_world", "sam3"),
-        default="grounding_dino",
-    )
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--limit", type=int, help="Run only the first N scenes for smoke tests")
@@ -52,13 +50,11 @@ def main() -> None:
     dataset = args.dataset.expanduser().resolve()
     output = args.output.expanduser().resolve()
     manifest = read_manifest(dataset / "manifest.json")
-    detector_kwargs: dict[str, object] = {}
-    if args.detector == "grounding_dino":
-        detector_kwargs = {
-            "box_threshold": args.box_threshold,
-            "text_threshold": args.text_threshold,
-        }
-    detector = create_detector(args.detector, device=args.device, **detector_kwargs)
+    detector = GroundingDINO(
+        device=args.device,
+        box_threshold=args.box_threshold,
+        text_threshold=args.text_threshold,
+    )
     detector_metadata = detector.metadata()
     model_hash = json_hash(detector_metadata)
     output.mkdir(parents=True, exist_ok=True)
@@ -149,7 +145,7 @@ def _prepare_run_manifest(
         "detector": detector,
         "model_hash": model_hash,
         "reporting_confidence_threshold": REPORTING_THRESHOLD,
-        "reporting_iou_threshold": 0.5,
+        "reporting_iou_threshold": IOU_THRESHOLD,
     }
     if path.exists() and read_json(path) != record:
         raise FileExistsError(f"Output directory belongs to a different run: {output}")

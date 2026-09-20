@@ -8,8 +8,8 @@ import numpy as np
 import pytest
 
 from detectors.base import Detection
+from evaluation import evaluate_instances
 from experiment import build_manifest, controlled_cases, read_manifest, write_manifest
-from results import evaluate_instances
 from scenes.assets import ASSETS, floor_offset
 from scenes.camera import CameraIntrinsics, CameraPose
 from scenes.house import build_house_xml
